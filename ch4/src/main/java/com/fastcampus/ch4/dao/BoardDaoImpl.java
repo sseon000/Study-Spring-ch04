@@ -65,6 +65,7 @@ public class BoardDaoImpl implements BoardDao {
         System.out.println("session = " + session);
         return session.selectOne(namespace+"searchResultCnt", sc);
     } // T selectOne(String statement, Object parameter)
+    
 
     @Override
     public List<BoardDto> searchSelectPage(SearchCondition sc) throws Exception {

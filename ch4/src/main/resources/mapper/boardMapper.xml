@@ -27,6 +27,14 @@
         FROM board
         ORDER BY reg_date DESC, bno DESC
     </select>
+    
+    <select id="selectPage" parameterType="map" resultType="BoardDto">
+        SELECT bno, title, content, writer, view_cnt, comment_cnt, reg_date
+        FROM board
+        ORDER BY reg_date DESC, bno DESC
+        <!-- LIMIT #{offset}, #{pageSize} : MY SQL-->
+        OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+    </select>
 
     <sql id="selectFromBoard">
         SELECT bno, title, content, writer, view_cnt, comment_cnt, reg_date
@@ -38,7 +46,7 @@
         WHERE bno = #{bno}
     </select>
 
-    <select id="selectPage" parameterType="map" resultType="BoardDto">
+    <select id="searchSelectPage" parameterType="map" resultType="BoardDto">
         <include refid="selectFromBoard"/>
         ORDER BY reg_date DESC, bno DESC
         LIMIT #{offset}, #{pageSize}
@@ -48,7 +56,7 @@
         UPDATE board
         SET   title = #{title}
           , content = #{content}
-          , up_date = now()
+          , up_date = sysdate
         WHERE bno = #{bno}
     </update>
 

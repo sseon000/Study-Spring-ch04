@@ -6,14 +6,14 @@ import java.util.Objects;
 public class BoardDto {
 	private Integer bno;
     private String  title;
-    private byte[]  content;
+    private String  content;
     private String  writer;
     private int     view_cnt;
     private int     comment_cnt;
     private Date    reg_date;
     
     public BoardDto() {}
-	public BoardDto(String title, byte[] content, String writer) {
+	public BoardDto(String title, String content, String writer) {
 		this.title = title;
 		this.content = content;
 		this.writer = writer;
@@ -30,10 +30,10 @@ public class BoardDto {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public byte[] getContent() {
+	public String getContent() {
 		return content;
 	}
-	public void setContent(byte[] content) {
+	public void setContent(String content) {
 		this.content = content;
 	}
 	public String getWriter() {

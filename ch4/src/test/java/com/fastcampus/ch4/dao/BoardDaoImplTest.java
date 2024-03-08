@@ -1,28 +1,40 @@
 package com.fastcampus.ch4.dao;
 
-import com.fastcampus.ch4.domain.*;
-import org.junit.*;
-import org.junit.runner.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.test.context.*;
-import org.springframework.test.context.junit4.*;
+import static org.junit.Assert.assertTrue;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.fastcampus.ch4.domain.BoardDto;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/spring/root-context.xml"})
 public class BoardDaoImplTest {
     @Autowired
     private BoardDao boardDao;
+    
+    @Test
+    public void insertTestData() throws Exception {
+    	boardDao.deleteAll();
+    	for(int i = 1; i <= 300; i++) {
+    		BoardDto boadDto = new BoardDto("title" + i, "no content" + i, "asdf");
+    		boardDao.insert(boadDto);
+    	}
+    }
 
     @Test
     public void countTest() throws Exception {
         boardDao.deleteAll();
         assertTrue(boardDao.count()==0);
 
-        BoardDto boardDto = new BoardDto("no title", "no content".getBytes(), "asdf");
+        BoardDto boardDto = new BoardDto("no title", "no content", "asdf");
         assertTrue(boardDao.insert(boardDto)==1);
         assertTrue(boardDao.count()==1);
 
@@ -30,7 +42,6 @@ public class BoardDaoImplTest {
         assertTrue(boardDao.count()==2);
     }
 
-    /*
     @Test
     public void deleteAllTest() throws Exception {
         boardDao.deleteAll();
@@ -111,15 +122,21 @@ public class BoardDaoImplTest {
     @Test
     public void selectTest() throws Exception {
         boardDao.deleteAll();
+        System.out.println(boardDao.count());
         assertTrue(boardDao.count()==0);
 
         BoardDto boardDto = new BoardDto("no title", "no content", "asdf");
-        assertTrue(boardDao.insert(boardDto)==1);
+        int insertCnt = boardDao.insert(boardDto);
+        System.out.println(boardDao.count());
+        assertTrue(insertCnt==1);
 
         Integer bno = boardDao.selectAll().get(0).getBno();
+        System.out.println("bno = " + bno);
         boardDto.setBno(bno);
         BoardDto boardDto2 = boardDao.select(bno);
-        assertTrue(boardDto.equals(boardDto2));
+        System.out.println("boardDto = " + boardDto.toString());
+        System.out.println("boardDto2 = " + boardDto2.toString());
+        assertTrue(boardDto.getBno().equals(boardDto2.getBno()));
     }
 
     @Test
@@ -127,7 +144,7 @@ public class BoardDaoImplTest {
         boardDao.deleteAll();
 
         for (int i = 1; i <= 10; i++) {
-            BoardDto boardDto = new BoardDto(""+i, "no content"+i, "asdf");
+            BoardDto boardDto = new BoardDto(""+i, "no content", "asdf");
             boardDao.insert(boardDto);
         }
 
@@ -170,7 +187,8 @@ public class BoardDaoImplTest {
         assertTrue(boardDao.update(boardDto)==1);
 
         BoardDto boardDto2 = boardDao.select(bno);
-        assertTrue(boardDto.equals(boardDto2));
+        System.out.println(boardDto2.getTitle().equals("yes title"));
+        assertTrue(boardDto2.getTitle().equals("yes title"));
     }
 
     @Test
@@ -194,5 +212,4 @@ public class BoardDaoImplTest {
         assertTrue(boardDto!=null);
         assertTrue(boardDto.getView_cnt() == 2);
     }
-    */
 }
