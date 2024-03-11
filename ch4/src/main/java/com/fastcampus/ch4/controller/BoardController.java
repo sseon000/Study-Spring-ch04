@@ -1,22 +1,71 @@
 package com.fastcampus.ch4.controller;
 
-import com.fastcampus.ch4.domain.*;
-import com.fastcampus.ch4.service.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.stereotype.*;
-import org.springframework.ui.*;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import javax.servlet.http.*;
-import java.time.*;
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.fastcampus.ch4.domain.BoardDto;
+import com.fastcampus.ch4.domain.PageHandler;
+import com.fastcampus.ch4.service.BoardService;
 
 @Controller
 @RequestMapping("/board")
 public class BoardController {
 	@Autowired
 	BoardService boardService;
+	
+	@PostMapping("/remove")
+	public String remove(Integer bno, Model m, Integer page, Integer pageSize, HttpSession session, RedirectAttributes rattr) {
+		String writer = (String)session.getAttribute("id");
+		try {
+			// 모델에 추가하면 redirect시 uri = /board/list?page=x&pageSize=x 자동추가
+			m.addAttribute("page", page);
+			m.addAttribute("pageSize", pageSize);
+			
+			int rowCnt = boardService.remove(bno, writer);
+			
+			if(rowCnt!=1) {
+				throw new Exception("board remove error");
+			}
+			//m.addAttribute("msg", "DEL_OK"); 모델에 담을시 리다이렉트 된 페이지에서 새로고침시 파라미터에 남아있어서 동작이 매끄럽지 않음
+			// RedirectAttributes rattr 사용
+			// addFlashAttribute 세션에 잠깐 이용
+			rattr.addFlashAttribute("msg", "DEL_OK");
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			//m.addAttribute("msg", "DEL_ERR");
+			rattr.addFlashAttribute("msg", "DEL_ERR");
+		}
+		
+		return "redirect:/board/list";
+	}
+	
+	@GetMapping("/read")
+	public String read(Integer bno, Model m, Integer page, Integer pageSize) {
+		try {
+			BoardDto boardDto = boardService.read(bno);
+//			m.addAttribute("boardDto", boardDto); 아래와 동일
+			m.addAttribute(boardDto);
+			m.addAttribute("page", page);
+			m.addAttribute("pageSize", pageSize);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "board";
+	}
 
 	@GetMapping("/list")
 	//public String list(int page, int pageSize, Model m, HttpServletRequest request) { int page, int pageSize 일 경우 page, pageSize가 null인 경우 에러 
@@ -39,6 +88,8 @@ public class BoardController {
 			List<BoardDto> list = boardService.getPage(map);
 			m.addAttribute("list", list);
 			m.addAttribute("ph", pageHandler);
+			m.addAttribute("page", page);
+			m.addAttribute("pageSize", pageSize);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
