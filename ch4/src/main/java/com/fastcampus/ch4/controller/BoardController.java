@@ -25,13 +25,71 @@ public class BoardController {
 	@Autowired
 	BoardService boardService;
 	
+	@PostMapping("/modify")
+	public String modify(BoardDto boardDto, Model m, Integer page, Integer pageSize,HttpSession session, RedirectAttributes rattr) {
+		String writer = (String)session.getAttribute("id");
+		boardDto.setWriter(writer);
+		
+		try {
+			int rowCnt = boardService.modify(boardDto); // update
+			
+			if(rowCnt != 1) {
+				throw new Exception("modify failed");
+			}
+			
+			// RedirectAttributes rattr 
+			rattr.addFlashAttribute("msg", "MOD_OK");
+			// 원래 목록 페이지로 돌아가기
+			rattr.addAttribute("page", page);
+			rattr.addAttribute("pageSize", pageSize);
+		} catch(Exception e) {
+			e.printStackTrace();
+			m.addAttribute(boardDto);
+			m.addAttribute("msg", "MOD_ERR");
+			return "board";
+		}
+		
+		return "redirect:/board/list";
+		
+	}
+	
+	@PostMapping("/write")
+	public String write(BoardDto boardDto, HttpSession session, Model m, RedirectAttributes rattr) {
+		String writer = (String)session.getAttribute("id");
+		boardDto.setWriter(writer);
+		
+		try {
+			int rowCnt = boardService.write(boardDto); // insert
+			
+			if(rowCnt != 1) {
+				throw new Exception("Write failed");
+			}
+			
+			// RedirectAttributes rattr 
+			rattr.addFlashAttribute("msg", "WRT_OK");
+			
+			return "redirect:/board/list";
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			m.addAttribute(boardDto);
+			m.addAttribute("mode", "new");
+			m.addAttribute("msg", "WRT_ERR");
+			return "board";
+		}
+		
+	}
+	
+	@GetMapping("/write")
+	public String write(Model m) {
+		m.addAttribute("mode", "new");
+		return "board";
+	}
+	
 	@PostMapping("/remove")
 	public String remove(Integer bno, Model m, Integer page, Integer pageSize, HttpSession session, RedirectAttributes rattr) {
 		String writer = (String)session.getAttribute("id");
 		try {
-			// 모델에 추가하면 redirect시 uri = /board/list?page=x&pageSize=x 자동추가
-			m.addAttribute("page", page);
-			m.addAttribute("pageSize", pageSize);
 			
 			int rowCnt = boardService.remove(bno, writer);
 			
@@ -42,7 +100,9 @@ public class BoardController {
 			// RedirectAttributes rattr 사용
 			// addFlashAttribute 세션에 잠깐 이용
 			rattr.addFlashAttribute("msg", "DEL_OK");
-			
+			// redirect시 uri = /board/list?page=x&pageSize=x 자동추가
+			rattr.addAttribute("page", page);
+			rattr.addAttribute("pageSize", pageSize);
 		} catch(Exception e) {
 			e.printStackTrace();
 			//m.addAttribute("msg", "DEL_ERR");

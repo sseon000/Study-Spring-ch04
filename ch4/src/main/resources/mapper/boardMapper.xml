@@ -57,7 +57,8 @@
         SET   title = #{title}
           , content = #{content}
           , up_date = sysdate
-        WHERE bno = #{bno}
+        WHERE bno = #{bno} 
+          AND writer = #{writer}
     </update>
 
     <update id="updateCommentCnt" parameterType="map">
