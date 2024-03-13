@@ -13,12 +13,27 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fastcampus.ch4.domain.BoardDto;
+import com.fastcampus.ch4.domain.SearchCondition;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/spring/root-context.xml"})
 public class BoardDaoImplTest {
     @Autowired
     private BoardDao boardDao;
+    
+    @Test
+    public void searchSelectPageTest() throws Exception {
+    	boardDao.deleteAll();
+    	for(int i = 1; i <= 20; i++) {
+    		BoardDto boadDto = new BoardDto("title" + i, "no content" + i, "asdf");
+    		boardDao.insert(boadDto);
+    	}
+    	
+    	SearchCondition sc = new SearchCondition(1, 10, "title2", "T"); 
+    	List<BoardDto> list = boardDao.searchSelectPage(sc);
+    	//stem.out.println("list = " + list);
+    	assertTrue(list.size()==2); // 1~20, title2, title12 
+    }
     
     @Test
     public void insertTestData() throws Exception {

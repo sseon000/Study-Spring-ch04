@@ -14,6 +14,6 @@ public interface BoardDao {
     List<BoardDto> selectAll() throws Exception;
     int deleteAll() throws Exception;
     int count() throws Exception;
-    //int searchResultCnt(SearchCondition sc) throws Exception;
-    //List<BoardDto> searchSelectPage(SearchCondition sc) throws Exception;
+    int searchResultCnt(SearchCondition sc) throws Exception;
+    List<BoardDto> searchSelectPage(SearchCondition sc) throws Exception;
 }
