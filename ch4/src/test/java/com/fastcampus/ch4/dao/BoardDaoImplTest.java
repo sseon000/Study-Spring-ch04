@@ -25,7 +25,7 @@ public class BoardDaoImplTest {
     public void searchSelectPageTest() throws Exception {
     	boardDao.deleteAll();
     	for(int i = 1; i <= 20; i++) {
-    		BoardDto boadDto = new BoardDto("title" + i, "no content" + i, "asdf");
+    		BoardDto boadDto = new BoardDto("title" + i, "no content" + i, "asdf" + i);
     		boardDao.insert(boadDto);
     	}
     	
@@ -33,13 +33,17 @@ public class BoardDaoImplTest {
     	List<BoardDto> list = boardDao.searchSelectPage(sc);
     	//stem.out.println("list = " + list);
     	assertTrue(list.size()==2); // 1~20, title2, title12 
+    	
+    	sc = new SearchCondition(1, 10, "asdf2", "W"); 
+    	list = boardDao.searchSelectPage(sc);
+    	assertTrue(list.size()==2); // 1~20, asdf2, asdf12
     }
     
     @Test
     public void insertTestData() throws Exception {
     	boardDao.deleteAll();
-    	for(int i = 1; i <= 300; i++) {
-    		BoardDto boadDto = new BoardDto("title" + i, "no content" + i, "asdf");
+    	for(int i = 1; i <= 50; i++) {
+    		BoardDto boadDto = new BoardDto("title" + i, "no content" + i, "asdf" + i);
     		boardDao.insert(boadDto);
     	}
     }

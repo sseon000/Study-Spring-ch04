@@ -60,8 +60,6 @@ public class BoardDaoImpl implements BoardDao {
 
     @Override
     public int searchResultCnt(SearchCondition sc) throws Exception {
-        System.out.println("sc in searchResultCnt() = " + sc);
-        System.out.println("session = " + session);
         return session.selectOne(namespace+"searchResultCnt", sc);
     } // T selectOne(String statement, Object parameter)
     

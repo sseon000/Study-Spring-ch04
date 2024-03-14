@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fastcampus.ch4.domain.BoardDto;
 import com.fastcampus.ch4.domain.PageHandler;
+import com.fastcampus.ch4.domain.SearchCondition;
 import com.fastcampus.ch4.service.BoardService;
 
 @Controller
@@ -129,27 +130,23 @@ public class BoardController {
 
 	@GetMapping("/list")
 	//public String list(int page, int pageSize, Model m, HttpServletRequest request) { int page, int pageSize 일 경우 page, pageSize가 null인 경우 에러 
-	public String list(Integer page, Integer pageSize, Model m, HttpServletRequest request) {
+	//public String list(Integer page, Integer pageSize, Model m, HttpServletRequest request) {
+	public String list(SearchCondition sc, Model m, HttpServletRequest request) {
+	//                 @ModelAttribute 자동으로 붙으니 생략
 		if(!loginCheck(request)) {
 			return "redirect:/login/login?toURL="+request.getRequestURL();  // 로그인을 안했으면 로그인 화면으로 이동
 		}
-
-		if(page == null) page = 1;
-		if(pageSize == null) pageSize = 10;
 		
 		try {
-			int totalCnt = boardService.getCount();
-			PageHandler pageHandler = new PageHandler(totalCnt, page, pageSize); 
+			int totalCnt = boardService.getSearchResultCnt(sc);
+			m.addAttribute("totalCnt", totalCnt);
+			PageHandler pageHandler = new PageHandler(totalCnt, sc); 
 			
-			Map map = new HashMap();
-			map.put("offset", (page-1)*10);
-			map.put("pageSize", pageSize);
-			
-			List<BoardDto> list = boardService.getPage(map);
+			List<BoardDto> list = boardService.getSearchResultPage(sc);
 			m.addAttribute("list", list);
 			m.addAttribute("ph", pageHandler);
-			m.addAttribute("page", page);
-			m.addAttribute("pageSize", pageSize);
+			m.addAttribute("page", sc.getPage());
+			m.addAttribute("pageSize", sc.getPageSize());
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

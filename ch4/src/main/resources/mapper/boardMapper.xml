@@ -46,27 +46,43 @@
         WHERE bno = #{bno}
     </select>
 
+	<sql id="searchCondition">
+		<choose>
+       		<when test='option=="T"'>
+       			AND title LIKE ('%'||#{keyword}||'%')
+       		</when>
+       		<when test='option=="W"'>
+       			AND writer LIKE ('%'||#{keyword}||'%')
+       		</when>
+       		<otherwise>
+       			AND (title LIKE ('%'||#{keyword}||'%')
+       			 OR content LIKE ('%'||#{keyword}||'%'))
+       		</otherwise>
+       	</choose>
+	</sql>
+
     <select id="searchSelectPage" parameterType="SearchCondition" resultType="BoardDto">
-        <include refid="selectFromBoard"/>
-        WHERE 1=1
-        AND title LIKE ('%'||#{keyword}||'%')
+    	<include refid="selectFromBoard"/>
+           WHERE 1=1
+        <include refid="searchCondition" />	
         ORDER BY reg_date DESC, bno DESC
-        OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+          OFFSET #{offset} ROWS FETCH NEXT #{pageSize} ROWS ONLY
     </select>
     
-     <select id="searchResultCnt" parameterType="SearchCondition" resultType="int">
-        <include refid="selectFromBoard"/>
-        WHERE 1=1
-        AND title LIKE ('%'||#{keyword}||'%')
+    <select id="searchResultCnt" parameterType="SearchCondition" resultType="int">
+    	SELECT count(*)
+          FROM board
+         WHERE 1=1
+	  <include refid="searchCondition" />
     </select>
 
     <update id="update" parameterType="BoardDto">
         UPDATE board
-        SET   title = #{title}
-          , content = #{content}
-          , up_date = sysdate
-        WHERE bno = #{bno} 
-          AND writer = #{writer}
+           SET title = #{title}
+             , content = #{content}
+             , up_date = sysdate
+         WHERE bno = #{bno} 
+           AND writer = #{writer}
     </update>
 
     <update id="updateCommentCnt" parameterType="map">
@@ -80,5 +96,4 @@
         SET   view_cnt = view_cnt + 1
         WHERE bno = #{bno}
     </update>
-
 </mapper>
