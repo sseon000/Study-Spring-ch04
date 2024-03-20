@@ -69,4 +69,12 @@ public class BoardDaoImpl implements BoardDao {
     	System.out.println(sc.toString());
         return session.selectList(namespace+"searchSelectPage", sc);
     } // List<E> selectList(String statement, Object parameter)
+
+	@Override
+	public int updateCommentCnt(Integer bno, int cnt) {
+		Map map = new HashMap();
+		map.put("bno", bno);
+		map.put("cnt", cnt);
+		return session.update(namespace+"updateCommentCnt", map);
+	}
 }
