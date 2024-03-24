@@ -53,7 +53,7 @@ public class LoginController {
         session.setAttribute("id", id);
 
         if(rememberId) {
-            //     1. 쿠키를 생성
+            // 1. 쿠키를 생성
             Cookie cookie = new Cookie("id", id); // ctrl+shift+o 자동 import
 //		       2. 응답에 저장
             response.addCookie(cookie);
@@ -71,7 +71,7 @@ public class LoginController {
     }
 
     private boolean loginCheck(String id, String pwd) {
-        User user = null;
+        UserDto user = null;
 
         try {
             user = userDao.selectUser(id);
