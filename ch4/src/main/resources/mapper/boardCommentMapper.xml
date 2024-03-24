@@ -17,27 +17,27 @@
         DELETE FROM comment WHERE cno = #{cno} AND commenter = #{commenter}
     </delete>
 
-    <insert id="insert" parameterType="CommentDto">
+    <insert id="insert" parameterType="BoardCommentDto">
         INSERT INTO comment
             (bno, pcno, comment, commenter, reg_date, up_date)
         VALUES
             (board_comment_seq.nextval, #{pcno}, #{comment}, #{commenter}, syadate, syadate)
     </insert>
 
-    <select id="selectAll" parameterType="int" resultType="CommentDto">
+    <select id="selectAll" parameterType="int" resultType="BoardCommentDto">
         SELECT cno, bno, pcno, comment, commenter, reg_date, up_date
         FROM comment
         WHERE bno = #{bno}
         ORDER BY reg_date ASC, cno ASC
     </select>
 
-    <select id="select" parameterType="int" resultType="CommentDto">
+    <select id="select" parameterType="int" resultType="BoardCommentDto">
         SELECT cno, bno, pcno, comment, commenter, reg_date, up_date
         FROM comment
         WHERE cno = #{cno}
     </select>
 
-    <update id="update" parameterType="CommentDto">
+    <update id="update" parameterType="BoardCommentDto">
         UPDATE comment
         SET comment = #{comment}
           , up_date = sysdate
