@@ -2,43 +2,43 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.fastcampus.ch4.dao.CommentMapper">
+<mapper namespace="com.fastcampus.ch4.dao.BoardCommentMapper">
     <select id="count" parameterType="int" resultType="int">
-        SELECT count(*) FROM comment
+        SELECT count(*) FROM board_comment
         WHERE  bno = #{bno}
     </select>
     
     <delete id="deleteAll" parameterType="int">
-        DELETE FROM comment
+        DELETE FROM board_comment
         WHERE  bno = #{bno}
     </delete>
 
     <delete id="delete" parameterType="map">
-        DELETE FROM comment WHERE cno = #{cno} AND commenter = #{commenter}
+        DELETE FROM board_comment WHERE cno = #{cno} AND commenter = #{commenter}
     </delete>
 
     <insert id="insert" parameterType="BoardCommentDto">
-        INSERT INTO comment
-            (bno, pcno, comment, commenter, reg_date, up_date)
+        INSERT INTO board_comment
+            (bno, pcno, boardcomment, commenter, reg_date, up_date)
         VALUES
             (board_comment_seq.nextval, #{pcno}, #{comment}, #{commenter}, syadate, syadate)
     </insert>
 
     <select id="selectAll" parameterType="int" resultType="BoardCommentDto">
-        SELECT cno, bno, pcno, comment, commenter, reg_date, up_date
-        FROM comment
+        SELECT cno, bno, pcno, boardcomment, commenter, reg_date, up_date
+        FROM board_comment
         WHERE bno = #{bno}
         ORDER BY reg_date ASC, cno ASC
     </select>
 
     <select id="select" parameterType="int" resultType="BoardCommentDto">
         SELECT cno, bno, pcno, comment, commenter, reg_date, up_date
-        FROM comment
-        WHERE cno = #{cno}
+        FROM board_comment
+        WHERE bno = #{bno}
     </select>
 
     <update id="update" parameterType="BoardCommentDto">
-        UPDATE comment
+        UPDATE board_comment
         SET comment = #{comment}
           , up_date = sysdate
         WHERE cno = #{cno} and commenter = #{commenter}

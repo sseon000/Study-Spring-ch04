@@ -11,7 +11,7 @@ import java.util.*;
 public class BoardCommentDaoImpl implements BoardCommentDao {
 	@Autowired
 	private SqlSession session;
-	private static String namespace = "com.fastcampus.ch4.dao.BoardMapper.";
+	private static String namespace = "com.fastcampus.ch4.dao.BoardCommentMapper.";
 	
 	@Override
 	public int count(Integer bno) throws Exception {
